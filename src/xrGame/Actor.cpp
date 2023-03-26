@@ -246,6 +246,8 @@ CActor::CActor() : CEntityAlive(), current_ik_cam_shift(0)
 	m_bSafemode = false;
 
 	m_bDelayDrawPickupItems = false;
+
+	m_FPCam = NULL;
 }
 
 
@@ -829,6 +831,7 @@ void CActor::HitSignal(float perc, Fvector& vLocalDir, CObject* who, s16 element
 }
 
 void start_tutorial(LPCSTR name);
+extern BOOL firstPersonDeath;
 
 void CActor::Die(CObject* who)
 {
@@ -920,11 +923,24 @@ void CActor::Die(CObject* who)
 
 	if (IsGameTypeSingle())
 	{
-#ifdef FP_DEATH
-        cam_Set(eacFirstEye);
-#else
-		cam_Set(eacFreeLook);
-#endif // FP_DEATH
+		if (firstPersonDeath) {
+			cam_Set(eacFirstEye);
+			m_FPCam = xr_new<CFPCamEffector>();
+			Fvector pos = Device.vCameraPosition;
+			Fvector hpb;
+			hpb.set(
+				Device.vCameraDirection.getH(),
+				Device.vCameraDirection.getP(),
+				0
+			);
+			m_FPCam->m_Position.set(pos);
+			m_FPCam->m_HPB.set(hpb);
+			m_FPCam->m_Camera.setHPB(hpb.x, hpb.y, hpb.z).translate_over(pos);
+			Cameras().AddCamEffector(m_FPCam);
+		}
+		else
+			cam_Set(eacFreeLook);
+
 		CurrentGameUI()->HideShownDialogs();
 
 		/* avo: attempt to set camera on timer */

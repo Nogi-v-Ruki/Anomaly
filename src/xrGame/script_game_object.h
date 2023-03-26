@@ -683,6 +683,7 @@ public:
 	void stop_particles(LPCSTR pname, LPCSTR bone);
 
 	Fvector bone_position(LPCSTR bone_name, bool bHud = false) const;
+	Fvector bone_direction(LPCSTR bone_name, bool bHud = false) const;
 	LPCSTR bone_name(u16 id, bool bHud);
 	bool is_body_turning() const;
 	cphysics_shell_scripted* get_physics_shell() const;
@@ -1027,6 +1028,10 @@ public:
 	void SetActorRunCoef(float run_coef);
 	float GetActorRunBackCoef() const;
 	void SetActorRunBackCoef(float run_back_coef);
+	float GetActorWalkAccel() const;
+	void SetActorWalkAccel(float val);
+	float GetActorWalkBackCoef() const;
+	void SetActorWalkBackCoef(float val);
 
 	void SetCharacterIcon(LPCSTR iconName);
 #endif

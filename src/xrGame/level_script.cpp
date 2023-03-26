@@ -679,6 +679,15 @@ void set_snd_volume(float v)
 	clamp(psSoundVFactor, 0.0f, 1.0f);
 }
 
+float get_music_volume() {
+	return psSoundVMusicFactor;
+}
+
+void set_music_volume(float v) {
+	psSoundVMusicFactor = v;
+	clamp(psSoundVMusicFactor, 0.0f, 1.0f);
+}
+
 #include "actor_statistic_mgr.h"
 
 void add_actor_points(LPCSTR sect, LPCSTR detail_key, int cnt, int pts)
@@ -1705,6 +1714,8 @@ void CLevel::script_register(lua_State* L)
 			def("get_snd_volume", &get_snd_volume),
 			def("get_rain_volume", &get_rain_volume),
 			def("set_snd_volume", &set_snd_volume),
+			def("get_music_volume", &get_music_volume),
+			def("set_music_volume", &set_music_volume),
 			def("add_cam_effector", ((float (*)(LPCSTR, int, bool, LPCSTR))&add_cam_effector)),
 			def("add_cam_effector", ((float (*)(LPCSTR, int, bool, LPCSTR, float))&add_cam_effector)),
 			def("add_cam_effector", ((float (*)(LPCSTR, int, bool, LPCSTR, float, bool))&add_cam_effector)),
@@ -1762,6 +1773,21 @@ void CLevel::script_register(lua_State* L)
 		.def_readonly("object", &script_rq_result::O)
 		.def_readonly("range", &script_rq_result::range)
 		.def_readonly("element", &script_rq_result::element)
+		.def_readonly("material_name", &script_rq_result::pMaterialName)
+		.def_readonly("material_flags", &script_rq_result::pMaterialFlags)
+		.def_readonly("material_phfriction", &script_rq_result::fPHFriction)
+		.def_readonly("material_phdamping", &script_rq_result::fPHDamping)
+		.def_readonly("material_phspring", &script_rq_result::fPHSpring)
+		.def_readonly("material_phbounce_start_velocity", &script_rq_result::fPHBounceStartVelocity)
+		.def_readonly("material_phbouncing", &script_rq_result::fPHBouncing)
+		.def_readonly("material_flotation_factor", &script_rq_result::fFlotationFactor)
+		.def_readonly("material_shoot_factor", &script_rq_result::fShootFactor)
+		.def_readonly("material_shoot_factor_mp", &script_rq_result::fShootFactorMP)
+		.def_readonly("material_bounce_damage_factor", &script_rq_result::fBounceDamageFactor)
+		.def_readonly("material_injurious_speed", &script_rq_result::fInjuriousSpeed)
+		.def_readonly("material_vis_transparency_factor", &script_rq_result::fVisTransparencyFactor)
+		.def_readonly("material_snd_occlusion_factor", &script_rq_result::fSndOcclusionFactor)
+		.def_readonly("material_density_factor", &script_rq_result::fDensityFactor)
 		.def(constructor<>()),
 		class_<enum_exporter<collide::rq_target>>("rq_target")
 		.enum_("targets")

@@ -110,6 +110,10 @@ float streff;
 
 extern BOOL g_ai_die_in_anomaly; //Alundaio
 
+extern BOOL firstPersonDeath;
+
+extern BOOL pseudogiantCanDamageObjects;
+
 ENGINE_API extern float g_console_sensitive;
 
 u32 g_dead_body_collision = 1;
@@ -514,6 +518,56 @@ public:
 };
 
 Fvector CCC_DemoRecordSetPos::p = {0, 0, 0};
+
+extern float offsetH;
+extern float offsetP;
+extern float offsetB;
+extern float offsetX;
+extern float offsetY;
+extern float offsetZ;
+extern float viewportNearOffset;
+extern int firstPersonDeathPositionSmoothing;
+extern int firstPersonDeathDirectionSmoothing;
+
+class CCC_FPDDirectionOffset : public CCC_Vector3
+{
+	static Fvector d;
+public:
+
+	CCC_FPDDirectionOffset(LPCSTR N) : CCC_Vector3(N, &d, Fvector().set(-FLT_MAX, -FLT_MAX, -FLT_MAX),
+		Fvector().set(FLT_MAX, FLT_MAX, FLT_MAX))
+	{
+	};
+
+	virtual void Execute(LPCSTR args)
+	{
+		CCC_Vector3::Execute(args);
+		offsetH = d.x;
+		offsetP = d.y;
+		offsetB = d.z;
+	}
+};
+Fvector CCC_FPDDirectionOffset::d = { 0, 0, 0 };
+
+class CCC_FPDPositionOffset : public CCC_Vector3
+{
+	static Fvector d;
+public:
+
+	CCC_FPDPositionOffset(LPCSTR N) : CCC_Vector3(N, &d, Fvector().set(-FLT_MAX, -FLT_MAX, -FLT_MAX),
+		Fvector().set(FLT_MAX, FLT_MAX, FLT_MAX))
+	{
+	};
+
+	virtual void Execute(LPCSTR args)
+	{
+		CCC_Vector3::Execute(args);
+		offsetX = d.x;
+		offsetY = d.y;
+		offsetZ = d.z;
+	}
+};
+Fvector CCC_FPDPositionOffset::d = { 0, 0, 0 };
 
 class CCC_DemoPlay : public IConsole_Command
 {
@@ -2448,6 +2502,8 @@ void CCC_RegisterCommands()
 
 	CMD4(CCC_Integer, "ai_die_in_anomaly", &g_ai_die_in_anomaly, 0, 1); //Alundaio
 
+	CMD4(CCC_Integer, "pseudogiant_can_damage_objects_on_stomp", &pseudogiantCanDamageObjects, 0, 1);
+
 	CMD4(CCC_Float, "ai_aim_predict_time", &g_aim_predict_time, 0.f, 10.f);
 
 	CMD4(CCC_Float, "head_bob_factor", &g_head_bob_factor, 0.f, 2.f);
@@ -2507,6 +2563,14 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Token, "g_dead_body_collision", &g_dead_body_collision, dead_body_collision_tokens);
 	CMD3(CCC_Mask, "g_feel_grenade", &psDeviceFlags2, rsFeelGrenade);
 	CMD3(CCC_Mask, "g_always_active", &psDeviceFlags2, rsAlwaysActive);
+
+	//First Person Death
+	CMD4(CCC_Integer, "first_person_death", &firstPersonDeath, 0, 1);
+	CMD1(CCC_FPDDirectionOffset, "first_person_death_direction_offset");
+	CMD1(CCC_FPDPositionOffset, "first_person_death_position_offset");
+	CMD4(CCC_Integer, "first_person_death_position_smoothing", &firstPersonDeathPositionSmoothing, 1, 30);
+	CMD4(CCC_Integer, "first_person_death_direction_smoothing", &firstPersonDeathDirectionSmoothing, 1, 60);
+	CMD4(CCC_Float, "first_person_death_near_plane_offset", &viewportNearOffset, -0.1, 0.5);
 
 	if (strstr(Core.Params, "-dbgdev"))
 		CMD4(CCC_Float, "g_streff", &streff, -10.f, 10.f);
