@@ -58,6 +58,8 @@ public:
 	IBlender* b_gasmask_drops;
 	IBlender* b_gasmask_dudv;
 	IBlender* b_nightvision;
+	IBlender* b_fakescope; //crookr
+	IBlender* b_heatvision; //--DSR-- HeatVision
 	IBlender* b_lut;
 	IBlender* b_smaa;
 	// compute shader for hdao
@@ -83,7 +85,11 @@ public:
 	ref_rt rt_Position; // 64bit,	fat	(x,y,z,?)				(eye-space)
 	ref_rt rt_Color; // 64/32bit,fat	(r,g,b,specular-gloss)	(or decompressed MET-8-8-8-8)
 
-	// 
+	//--DSR-- HeatVision_start
+	ref_rt rt_Heat;
+	//--DSR-- HeatVision_end
+
+	//
 	ref_rt rt_Accumulator; // 64bit		(r,g,b,specular)
 	ref_rt rt_Accumulator_temp; // only for HW which doesn't feature fp16 blend
 	ref_rt rt_sunshafts_0; // ss0
@@ -92,12 +98,15 @@ public:
 	ref_rt rt_Generic_1; // 32bit		(r,g,b,a)				// post-process, intermidiate results, etc.
 	
 	resptr_core<CRT, resptrcode_crt> rt_Generic_temp;
-	
+
 	ref_rt rt_secondVP;	// 32bit		(r,g,b,a) --//#SM+#-- +SecondVP+
+
+
+	ref_rt rt_fakescope;	// crookr fakescope
 
 	ref_rt rt_dof;
 	ref_rt rt_ui_pda;
-	
+
 	ref_rt rt_blur_h_2;
 	ref_rt rt_blur_2;
 
@@ -171,10 +180,12 @@ private:
 	ref_shader s_accum_volume;
 	ref_shader s_blur;	
 	ref_shader s_dof;
-	ref_shader s_pp_bloom;	
+	ref_shader s_pp_bloom;
 	ref_shader s_gasmask_drops;
 	ref_shader s_gasmask_dudv;
-	ref_shader s_nightvision;	
+	ref_shader s_nightvision;
+	ref_shader s_fakescope; //crookr
+	ref_shader s_heatvision; //--DSR-- HeatVision
 	ref_shader s_smaa;
 
 	ref_shader s_lut;
@@ -300,7 +311,9 @@ public:
 	void phase_gasmask_drops();
 	void phase_gasmask_dudv();
 	void phase_nightvision();
-	void phase_lut();		
+	void phase_fakescope(); //crookr
+	void phase_heatvision(); //--DSR-- HeatVision
+	void phase_lut();
 	void phase_smaa();
 	void phase_scene_prepare();
 	void phase_scene_begin();

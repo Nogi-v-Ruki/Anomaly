@@ -393,10 +393,15 @@ void CRenderTarget::phase_combine()
 		phase_gasmask_dudv();
 		phase_gasmask_drops();
 	}
-	
+
 	if(ps_r2_nightvision > 0)
 		phase_nightvision();
-	
+
+	if (scope_fake_enabled)
+	{
+		phase_fakescope(); //crookr
+	}
+
     //SMAA
 	if (ps_smaa_quality)
 	{

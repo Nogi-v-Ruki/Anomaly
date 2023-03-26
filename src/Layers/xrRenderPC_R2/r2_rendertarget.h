@@ -39,9 +39,11 @@ public:
 	IBlender* b_gasmask_drops;
 	IBlender* b_gasmask_dudv;
 	IBlender* b_nightvision;
+	IBlender* b_fakescope; //crookr
+	IBlender* b_heatvision; //--DSR-- HeatVision
 	IBlender* b_lut;
-	
-	IBlender* b_smaa;	
+
+	IBlender* b_smaa;
 #ifdef DEBUG
 	struct		dbg_line_t		{
 		Fvector	P0,P1;
@@ -68,8 +70,11 @@ public:
 	ref_rt rt_secondVP;		// 32bit		(r,g,b,a) --//#SM+#-- +SecondVP+
 	ref_rt rt_ui_pda;
 
+	ref_rt rt_fakescope; //crookr
+
 	ref_rt rt_dof;
-	
+	ref_rt rt_Heat; //--DSR-- HeatVision
+
 	ref_rt rt_blur_h_2;
 	ref_rt rt_blur_2;
 
@@ -122,8 +127,10 @@ private:
 	ref_shader s_gasmask_drops;
 	ref_shader s_gasmask_dudv;
 	ref_shader s_nightvision;
+	ref_shader s_fakescope; //crookr
+	ref_shader s_heatvision; //--DSR-- HeatVision
 
-	ref_shader s_blur;	
+	ref_shader s_blur;
 	ref_shader s_dof;
 	ref_shader s_pp_bloom;
 
@@ -260,9 +267,11 @@ public:
 	void phase_gasmask_drops();
 	void phase_gasmask_dudv();
 	void phase_nightvision();
-	void phase_lut();	
+	void phase_fakescope(); //crookr
+	void phase_heatvision(); //--DSR-- HeatVision
+	void phase_lut();
 	void phase_smaa();
-		
+
 	void phase_wallmarks();
 	void phase_smap_direct(light* L, u32 sub_phase);
 	void phase_smap_direct_tsh(light* L, u32 sub_phase);
